@@ -1,45 +1,38 @@
 import Head from 'next/head';
-import { auth } from 'firebase';
-import { useAuth } from '../lib/auth';
-import styles from '../styles/Home.module.css';
+import { Button, Heading, Text, Code, Box } from '@chakra-ui/react';
 
-export default function Home() {
+import { useAuth } from '@/lib/auth';
+
+const Home = () => {
   const auth = useAuth();
 
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>Fast Feedback</h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <button onClick={(e) => auth.signinWithGithub()}>Sign In</button>
-
-        {auth?.user && (
-          <button onClick={(e) => auth.signout()}>Sign Out</button>
-        )}
-
-        <div>{auth?.user?.email}</div>
+    <div className="container">
+      <main>
+        <Box p={8}>
+          <Heading as="h1" size="xl" mb={4}>
+            Fast Feedback
+          </Heading>
+          <Text mb={4}>
+            Current user: <Code>{auth.user ? auth.user.email : 'None'}</Code>
+          </Text>
+          {auth.user ? (
+            <Button size="md" onClick={(e) => auth.signout()}>
+              Sign Out
+            </Button>
+          ) : (
+            <Button
+              colorScheme="teal"
+              size="md"
+              onClick={(e) => auth.signinWithGitHub()}
+            >
+              Sign In
+            </Button>
+          )}
+        </Box>
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
     </div>
   );
-}
+};
+
+export default Home;

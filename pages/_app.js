@@ -1,11 +1,17 @@
-import { ProvideAuth } from '../lib/auth';
+import { AuthProvider } from '@/lib/auth';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+import customTheme from '@/styles/theme';
 
-function MyApp({ Component, pageProps }) {
+const designSystem = extendTheme({ customTheme });
+
+const App = ({ Component, pageProps }) => {
   return (
-    <ProvideAuth>
-      <Component {...pageProps} />
-    </ProvideAuth>
+    <ChakraProvider theme={designSystem}>
+      <AuthProvider>
+        <Component {...pageProps} />
+      </AuthProvider>
+    </ChakraProvider>
   );
-}
+};
 
-export default MyApp;
+export default App;
