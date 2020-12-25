@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { useForm } from 'react-hook-form';
+import { mutate } from 'swr';
 import {
   Modal,
   ModalOverlay,
@@ -12,39 +13,73 @@ import {
   FormLabel,
   Button,
   Input,
-  useDisclosure
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react';
 import { createSite } from '@/lib/db';
+import { useAuth } from '@/lib/auth';
+import fetcher from '@/utils/fetcher';
 
-const AddSiteModal = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+const AddSiteModal = ({ children }) => {
+  const auth = useAuth();
   const initialRef = useRef();
-  const { register, handleSubmit } = useForm();
+  const toast = useToast();
+  const { handleSubmit, register } = useForm();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const onSubmit = (data) => createSite(data);
+  const onCreateSite = ({ name, url }) => {
+    const newSite = {
+      authorId: auth.user.uid,
+      createdAt: new Date().toISOString(),
+      name,
+      url
+    };
+
+    createSite(newSite);
+    toast({
+      title: 'Success, site created!.',
+      description: "We've added your site.",
+      status: 'success',
+      duration: 5000,
+      isClosable: true
+    });
+    mutate(
+      '/api/sites',
+      async (data) => {
+        return { sites: [...data.sites, newSite] };
+      },
+      false
+    );
+
+    onClose();
+  };
 
   return (
     <>
       <Button
         onClick={onOpen}
-        variant="solid"
-        fontWeight="normal"
-        size="md"
-        maxW="200px"
+        backgroundColor="gray.900"
+        color="white"
+        fontWeight="medium"
+        _hover={{ bg: 'gray.700' }}
+        _active={{
+          bg: 'gray.800',
+          transform: 'scale(0.95)'
+        }}
       >
-        Add Your First Site
+        {children}
       </Button>
 
       <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent as="form" onSubmit={handleSubmit(onSubmit)}>
+        <ModalContent as="form" onSubmit={handleSubmit(onCreateSite)}>
           <ModalHeader fontWeight="bold">Add Site</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <FormControl>
               <FormLabel>Name</FormLabel>
               <Input
-                name="site"
+                name="name"
                 ref={initialRef}
                 ref={register({ required: 'Required' })}
                 placeholder="My Site"

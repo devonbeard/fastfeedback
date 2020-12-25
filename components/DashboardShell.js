@@ -1,67 +1,66 @@
 import React from 'react';
 import {
-  Flex,
-  Link,
-  Stack,
-  Avatar,
+  Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   Heading,
-  useRadio
+  Button,
+  Flex,
+  Link,
+  Avatar,
+  Icon
 } from '@chakra-ui/react';
-import { FastFeedbackIcon } from '../icons';
+
 import { useAuth } from '@/lib/auth';
+import AddSiteModal from './AddSiteModal';
+import { FastFeedbackIcon } from '../icons/index';
 
 const DashboardShell = ({ children }) => {
-  const auth = useAuth();
+  const { user, signout } = useAuth();
 
   return (
-    <Flex flexDirection="column">
-      <Flex
-        backgroundColor="white"
-        justifyContent="space-between"
-        alignItems="center"
-        py={4}
-        px={8}
-      >
-        <Stack spacing={4} isInline align="center">
-          <FastFeedbackIcon color="black" boxSize="24px" />
-          <Link>Sites</Link>
-          <Link>Feedback</Link>
-        </Stack>
-        <Flex justifyContent="flex-start" alignItems="center">
-          <Link mr={4}>Account</Link>
-          <Avatar size="sm" src={auth.user.photoUrl} />
-        </Flex>
-      </Flex>
-      <Flex
-        flexDirection="column"
-        backgroundColor="gray.100"
-        p={16}
-        height="100vh"
-      >
+    <Box backgroundColor="gray.100" h="100vh">
+      <Flex backgroundColor="white" mb={16} w="full">
         <Flex
-          maxWidth="1100px"
-          width="100%"
-          ml="auto"
-          mr="auto"
-          direction="column"
+          alignItems="center"
+          justifyContent="space-between"
+          pt={4}
+          pb={4}
+          maxW="1250px"
+          margin="0 auto"
+          w="full"
+          px={8}
+          h="70px"
         >
-          <Breadcrumb>
-            <BreadcrumbItem isCurrentPage>
-              <BreadcrumbLink color="gray.700" fontSize="sm">
-                Sites
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </Breadcrumb>
-          <Heading size="xl" mb={4}>
-            My Sites
-          </Heading>
-          {children}
+          <Flex>
+            <FastFeedbackIcon color="black" boxSize="24px" mr={4} />
+            <Link mr={4}>Sites</Link>
+            <Link>Feedback</Link>
+          </Flex>
+          <Flex justifyContent="center" alignItems="center">
+            {user && (
+              <Button variant="ghost" mr={2} onClick={() => signout()}>
+                Log Out
+              </Button>
+            )}
+            <Avatar size="sm" src={user?.photoUrl} />
+          </Flex>
         </Flex>
       </Flex>
-    </Flex>
+      <Flex margin="0 auto" direction="column" maxW="1250px" px={8}>
+        <Breadcrumb>
+          <BreadcrumbItem>
+            <BreadcrumbLink>Sites</BreadcrumbLink>
+          </BreadcrumbItem>
+        </Breadcrumb>
+        <Flex justifyContent="space-between">
+          <Heading mb={8}>My Sites</Heading>
+          <AddSiteModal>+ Add Site</AddSiteModal>
+        </Flex>
+        {children}
+      </Flex>
+    </Box>
   );
 };
 

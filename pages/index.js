@@ -17,8 +17,21 @@ const Home = () => {
       <FastFeedbackIcon color="black" boxSize="32px" mb={4} />
 
       {auth.user ? (
-        <Button size="md" onClick={(e) => auth.signout()}>
-          Sign Out
+        <Button
+          as="a"
+          href="/sites"
+          backgroundColor="gray.900"
+          color="white"
+          fontWeight="medium"
+          mt={4}
+          maxW="200px"
+          _hover={{ bg: 'gray.700' }}
+          _active={{
+            bg: 'gray.800',
+            transform: 'scale(0.95)'
+          }}
+        >
+          View Dashboard
         </Button>
       ) : (
         <Button size="md" onClick={(e) => auth.signinWithGitHub()}>
