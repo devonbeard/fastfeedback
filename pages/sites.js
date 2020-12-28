@@ -1,4 +1,4 @@
-import useSWR from 'swr'
+import useSWR from 'swr';
 import { useAuth } from '@/lib/auth';
 import EmptyState from '@/components/EmptyState';
 import DashboardShell from '@/components/DashboardShell';
@@ -7,10 +7,8 @@ import fetcher from '@/utils/fetcher';
 import SiteTable from '../components/SiteTable';
 
 const Dashboard = () => {
-  const auth = useAuth();
-  const { data } = useSWR('/api/sites', fetcher);
-
-  console.log(data);
+  const { user } = useAuth();
+  const { data } = useSWR(user ? ['/api/sites', user.token] : null, fetcher);
 
   if (!data) {
     return (

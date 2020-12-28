@@ -18,7 +18,6 @@ import {
 } from '@chakra-ui/react';
 import { createSite } from '@/lib/db';
 import { useAuth } from '@/lib/auth';
-import fetcher from '@/utils/fetcher';
 
 const AddSiteModal = ({ children }) => {
   const auth = useAuth();
@@ -44,7 +43,7 @@ const AddSiteModal = ({ children }) => {
       isClosable: true
     });
     mutate(
-      '/api/sites',
+      ['/api/sites', auth.user.token],
       async (data) => {
         return { sites: [...data.sites, newSite] };
       },
